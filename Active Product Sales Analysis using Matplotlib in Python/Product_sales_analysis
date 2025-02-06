@@ -1,0 +1,53 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+Order_Details = pd.read_csv('D:\Github\Project\DataLab\Active Product Sales Analysis using Matplotlib in Python\Order_details(masked).csv')
+
+
+#Take Transaction
+
+Order_Details['Time'] = pd.to_datetime(Order_Details['Transaction Date'])
+
+
+#Extract HOur from the date tome
+
+Order_Details['Hour'] = Order_Details['Time'].dt.hour
+
+#get the time where the busiest hours are | n = 24
+
+timemost_busy1 = Order_Details['Hour'].value_counts().index.tolist()[:24]
+
+timemost_busy2 = Order_Details['Hour'].value_counts().values.tolist()[:24]
+
+#Join the indices and the frequency
+
+tmost = np.column_stack((timemost_busy1, timemost_busy2))
+
+print("Hour of the Day" + "\t" + "Cumulative Number of Purchases \n")
+print('\n'.join('\t\t'.join(map(str, row))for row in tmost)) 
+
+#Customize the data 
+
+timemost = Order_Details['Hour'].value_counts()
+timemost_busy1 = []
+
+for i in range(0,23):
+    timemost_busy1.append(i)
+    
+timemost_busy2 = timemost.sort_index()
+timemost_busy2.tolist()
+timemost_busy2 = pd.DataFrame(timemost_busy2)
+
+#plotting
+
+plt.figure(figsize=(20, 10))
+
+plt.title('Sales Happening Per Hour(Spread Throughout the Week)'
+          , fontdict={'fontname': 'monospace', 'fontsize': 30}, y=1.05)
+
+plt.ylabel('Number of Purchases Mader', fontsize=18, labelpad=20)
+plt.xlabel('Hour', fontsize = 18, labelpad = 20)
+plt.plot(timemost_busy1, timemost_busy2, color='m')
+plt.grid()
+plt.show()
